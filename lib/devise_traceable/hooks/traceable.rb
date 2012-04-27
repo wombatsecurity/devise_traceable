@@ -4,7 +4,13 @@
 # not trigger it.
 
 Warden::Manager.before_logout do |record, warden, opts|
-  if record.respond_to?(:stamp!)
-    record.stamp!
+  if record.respond_to?(:stamp_out!)
+    record.stamp_out!
+  end
+end
+
+Warden::Manager.after_authentication do |record, warden, opts|
+  if record.respond_to?(:stamp_in!)
+    record.stamp_in!
   end
 end

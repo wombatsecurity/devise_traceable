@@ -10,10 +10,13 @@ module Devise
     # * ip_address
     
     module Traceable
-      def stamp!
-        new_current = Time.now
-        "#{self.class}Tracing".constantize.create(:ip_address => self.current_sign_in_ip, :sign_in_at => self.current_sign_in_at, :sign_out_at => new_current, "#{self.class}".foreign_key.to_sym => self.id)
+      def stamp_out!
+        "#{self.class}Tracing".constantize.create(:ip_address => self.current_sign_in_ip, :action => "Logout", "#{self.class}".foreign_key.to_sym => self.id)
       end
+
+      def stamp_in!
+        "#{self.class}Tracing".constantize.create(:ip_address => self.current_sign_in_ip, :action => "Login", "#{self.class}".foreign_key.to_sym => self.id)
+      end      
     end
   end
 end
