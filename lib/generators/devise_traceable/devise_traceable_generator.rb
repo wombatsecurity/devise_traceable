@@ -29,20 +29,20 @@ class DeviseTraceableGenerator < Rails::Generators::NamedBase
     if model_exists?
       say "* Model already exists."
     elsif options[:orm].present?
-      invoke "model", ["#{name}Tracing"], :migration => false, :orm => options[:orm]
+      invoke "model", ["ActivityStream"], :migration => false, :orm => options[:orm]
 
       unless model_exists?
         abort "Tried to invoke the model generator for '#{options[:orm]}' but could not find it.\n" <<
-          "Please create your model by hand before calling `rails g devise_traceable #{name}`."
+          "Please create your model by hand before calling `rails g devise_traceable ActivityStream`."
       end
     else
       abort "Cannot create a devise model because config.generators.orm is blank.\n" <<
-        "Please create your model by hand or configure your generators orm before calling `rails g devise_traceable #{name}`."
+        "Please create your model by hand or configure your generators orm before calling `rails g devise_traceable ActivityStream`."
     end
   end
 
   def create_migration_file
-    migration_template 'migration.rb', "db/migrate/devise_create_#{name.downcase}_tracings.rb"
+    migration_template 'migration.rb', "db/migrate/create_activity_streams.rb"
   end
 
   protected

@@ -11,15 +11,15 @@ module Devise
     
     module Traceable
       def stamp_out!
-        "#{self.class}Tracing".constantize.create(:ip_address => self.current_sign_in_ip, :action => "Logout", "#{self.class}".foreign_key.to_sym => self.id)
+        ActivityStream.create(:ip_address => self.current_sign_in_ip, :action => "Logout", "#{self.class}".foreign_key.to_sym => self.id)
       end
 
       def stamp_in!
-        "#{self.class}Tracing".constantize.create(:ip_address => self.current_sign_in_ip, :action => "Login", "#{self.class}".foreign_key.to_sym => self.id)
+        ActivityStream.create(:ip_address => self.current_sign_in_ip, :action => "Login", "#{self.class}".foreign_key.to_sym => self.id)
       end   
 
       def stamp_password_changed!
-        "#{self.class}Tracing".constantize.create(:ip_address => self.current_sign_in_ip, :action => "Password Changed", "#{self.class}".foreign_key.to_sym => self.id)
+        ActivityStream.create(:ip_address => self.current_sign_in_ip, :action => "Password Changed", "#{self.class}".foreign_key.to_sym => self.id)
       end   
     end
   end
