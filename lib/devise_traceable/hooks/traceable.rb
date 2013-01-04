@@ -17,7 +17,15 @@ Warden::Manager.before_logout do |record, warden, opts|
 end
 
 Warden::Manager.after_authentication do |record, warden, opts|
-  if record.respond_to?(:stamp_in!)
-    record.stamp_in!
-  end
+    user_agent = ""
+    if !warden.nil?
+        if !warden.env.nil?
+            request = Rack::Request.new(warden.env)
+            user_agent = request.user_agent
+        end
+    end
+
+    if record.respond_to?(:stamp_in!)
+        record.stamp_in!(user_agent)
+    end
 end
