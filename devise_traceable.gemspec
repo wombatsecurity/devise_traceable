@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "devise_traceable"
-  s.version = "0.0.7"
+  s.version = "0.0.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Shenouda Bertel", "Patrick Veverka"]
-  s.date = "2012-04-27"
+  s.authors = ["Patrick Veverka"]
+  s.date = "2013-01-04"
   s.description = "Devise Traceable For Traceing Devise Models Logins and Logouts in separate model table"
   s.email = "patrick.veverka@stratumsecurity.com"
   s.extra_rdoc_files = [
