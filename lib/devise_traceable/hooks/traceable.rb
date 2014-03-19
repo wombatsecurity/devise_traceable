@@ -4,28 +4,28 @@
 # not trigger it.
 
 Warden::Manager.before_logout do |record, warden, opts|
-    user_agent = ""
-    if !warden.nil?
-        if !warden.env.nil?
-            request = Rack::Request.new(warden.env)
-            user_agent = request.user_agent
-        end
+  user_agent = ""
+  remote_ip = ""
+  if !warden.nil?
+    if !warden.env.nil?
+      request = Rack::Request.new(warden.env)
+      user_agent = request.user_agent
+      remote_ip = request.remote_ip
     end
-    if record.respond_to?(:stamp_out!)
-        record.stamp_out!(user_agent)
-    end
+  end
+  record.stamp_out!(user_agent, remote_ip) if record.respond_to?(:stamp_out!)
 end
 
 Warden::Manager.after_authentication do |record, warden, opts|
-    user_agent = ""
-    if !warden.nil?
-        if !warden.env.nil?
-            request = Rack::Request.new(warden.env)
-            user_agent = request.user_agent
-        end
+  user_agent = ""
+  remote_ip = ""
+  if !warden.nil?
+    if !warden.env.nil?
+        request = Rack::Request.new(warden.env)
+        user_agent = request.user_agent
+        remote_ip = request.remote_ip
     end
+  end
 
-    if record.respond_to?(:stamp_in!)
-        record.stamp_in!(user_agent)
-    end
+  record.stamp_in!(user_agent, remote_ip) if record.respond_to?(:stamp_in!)
 end

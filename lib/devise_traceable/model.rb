@@ -1,5 +1,5 @@
 require 'devise_traceable/hooks/traceable'
-
+require 'oj'
 module Devise
   module Models
     # Trace information about your user sign in. It tracks the following columns:
@@ -11,29 +11,63 @@ module Devise
 
     module Traceable
       def stamp_out!
-        self.stamp_out!(nil)
+        self.stamp_out!(nil, nil)
       end
 
-      def stamp_out!(user_agent)
-        ActivityStream.create(:ip_address => self.current_sign_in_ip,
-                              :action => "Logout",
-                              "#{self.class}".foreign_key.to_sym => self.id,
-                              :notes => { :user_agent => user_agent }.to_yaml)
+      def stamp_out!(user_agent, remote_ip)
+        begin
+          ActivityStream.create(
+            ip_address: self.current_sign_in_ip,
+            action: "Logout",
+            user_id: self.id,
+            notes: Oj.dump({
+              user_agent: user_agent.to_s,
+              remote_ip: remote_ip.to_s
+            })
+          )
+        rescue Exception => e
+          puts "Exception: #{e.message}"
+        end
       end
 
       def stamp_in!
-        self.stamp_in!(nil)
+        self.stamp_in!(nil, nil)
       end
 
-      def stamp_in!(user_agent)
-        ActivityStream.create(:ip_address => self.current_sign_in_ip,
-                              :action => "Login",
-                              "#{self.class}".foreign_key.to_sym => self.id,
-                              :notes => { :user_agent => user_agent }.to_yaml)
+      def stamp_in!(user_agent, remote_ip)
+        begin
+          ActivityStream.create(
+            ip_address: self.current_sign_in_ip,
+            action: "Login",
+            user_id: self.id,
+            notes: Oj.dump({
+              user_agent: user_agent.to_s,
+              remote_ip: remote_ip.to_s
+            })
+          )
+        rescue Exception => e
+          puts "Exception: #{e.message}"
+        end
       end
 
       def stamp_password_changed!
-        ActivityStream.create(:ip_address => self.current_sign_in_ip, :action => "Password Changed", "#{self.class}".foreign_key.to_sym => self.id)
+        self.stamp_password_changed!(nil, nil)
+      end
+
+      def stamp_password_changed!(user_agent, remote_ip)
+        begin
+          ActivityStream.create(
+            ip_address: self.current_sign_in_ip,
+            action: "Password Changed",
+            user_id: self.id,
+            notes: Oj.dump({
+              user_agent: user_agent.to_s,
+              remote_ip: remote_ip.to_s
+            })
+          )
+        rescue Exception => e
+          puts "Exception: #{e.message}"
+        end
       end
     end
   end
